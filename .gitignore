@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# original full-size renders (web copies live in public/hero)
+/public/pic*.png
+/src/final.jpeg
