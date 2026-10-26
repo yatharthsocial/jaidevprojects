@@ -24,19 +24,19 @@ const FEATURES = [
     icon: "store",
     title: ["Retail", "showrooms"],
     body: "Shopfronts facing the main road between Udupi and Manipal, where passing trade sees you first.",
-    href: "#spaces",
+    href: "#contact",
   },
   {
     icon: "office",
     title: ["Office", "spaces"],
     body: "Workable floors for firms, clinics and studios, with two basements of parking below.",
-    href: "#spaces",
+    href: "#contact",
   },
   {
     icon: "bed",
     title: ["Lodging", "suites"],
     body: "Comfortable rooms for travellers and visitors to Manipal, on the floors above the shops.",
-    href: "#spaces",
+    href: "#contact",
   },
   {
     icon: "check",

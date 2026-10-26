@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { NAV } from "@/lib/site";
 
 const BRAND = "Jaidev";
 
@@ -17,12 +18,6 @@ const SHOTS = [
 ];
 const LAST = SHOTS.length - 1;
 
-const NAV = [
-  { label: "About", href: "#about" },
-  { label: "Spaces", href: "#spaces" },
-  { label: "Location", href: "#location" },
-  { label: "Contact", href: "#contact" },
-];
 
 const SHUTTER_MS = 450;
 const FADE_MS = 400;
