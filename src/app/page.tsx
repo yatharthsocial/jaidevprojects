@@ -5,6 +5,7 @@ import Faq from "@/components/Faq";
 import Footer from "@/components/Footer";
 import Gallery from "@/components/Gallery";
 import Hero from "@/components/Hero";
+import LeadPopup from "@/components/LeadPopup";
 import Location from "@/components/Location";
 import WhyInvest from "@/components/WhyInvest";
 
@@ -22,6 +23,7 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
+      <LeadPopup />
     </>
   );
 }

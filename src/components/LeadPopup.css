@@ -1,0 +1,236 @@
+/* Lead capture popup. Every class is prefixed with lead-popup- so nothing
+   leaks into the rest of the site. */
+
+.lead-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(10 10 9 / 0.6);
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.lead-popup-overlay.is-visible {
+  opacity: 1;
+}
+
+.lead-popup {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 420px;
+  /* Scrolls inside itself when the phone keyboard shrinks the viewport. */
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 40px 32px 32px;
+  border-radius: 20px;
+  background: #fff;
+  color: #1a1a18;
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.25);
+  transform: translateY(24px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lead-popup-overlay.is-visible .lead-popup {
+  transform: translateY(0);
+}
+
+.lead-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #6b6b66;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.lead-popup-close:hover {
+  background: #f1f0ec;
+  color: #1a1a18;
+}
+
+.lead-popup-title {
+  margin: 0;
+  padding-right: 36px;
+  font-family: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.lead-popup-subtitle {
+  margin: 10px 0 0;
+  color: #6b6b66;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.lead-popup-form {
+  margin-top: 24px;
+}
+
+.lead-popup-field {
+  margin-bottom: 16px;
+}
+
+.lead-popup-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: #45453f;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.lead-popup-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #d9d8d2;
+  border-radius: 12px;
+  background: #fafaf8;
+  color: #1a1a18;
+  /* 16px stops iOS Safari zooming in when a field is focused. */
+  font: inherit;
+  font-size: 16px;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+
+.lead-popup-field input:focus {
+  outline: none;
+  border-color: #1a1a18;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(26 26 24 / 0.1);
+}
+
+.lead-popup-field input[aria-invalid="true"] {
+  border-color: #c0392b;
+}
+
+.lead-popup-field input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgb(192 57 43 / 0.15);
+}
+
+.lead-popup-error,
+.lead-popup-form-error {
+  margin: 6px 0 0;
+  color: #c0392b;
+  font-size: 13px;
+}
+
+.lead-popup-form-error {
+  margin: 0 0 12px;
+}
+
+.lead-popup-submit {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #1a1a18;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 200ms ease, opacity 200ms ease;
+}
+
+.lead-popup-submit:hover {
+  background: #3a3a36;
+}
+
+.lead-popup-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.lead-popup-close:focus-visible,
+.lead-popup-submit:focus-visible {
+  outline: 2px solid #1a1a18;
+  outline-offset: 2px;
+}
+
+.lead-popup-success {
+  padding: 12px 0 4px;
+  text-align: center;
+}
+
+.lead-popup-success .lead-popup-title {
+  padding-right: 0;
+}
+
+.lead-popup-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  background: #1a1a18;
+  color: #fff;
+}
+
+.lead-popup-check svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Phones: nearly full width with a small side margin, tighter type. */
+@media (max-width: 479px) {
+  .lead-popup-overlay {
+    padding: 12px;
+  }
+
+  .lead-popup {
+    max-height: calc(100dvh - 24px);
+    padding: 32px 20px 22px;
+    border-radius: 16px;
+  }
+
+  .lead-popup-close {
+    top: 6px;
+    right: 6px;
+  }
+
+  .lead-popup-title {
+    font-size: 27px;
+  }
+
+  .lead-popup-subtitle {
+    font-size: 14px;
+  }
+
+  .lead-popup-form {
+    margin-top: 20px;
+  }
+
+  .lead-popup-field {
+    margin-bottom: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lead-popup-overlay,
+  .lead-popup {
+    transition: none;
+  }
+}
