@@ -9,12 +9,14 @@ const BRAND = "Jaidev";
 
 // Played in order during the splash; the last one expands into the hero
 // card. Afterwards the card's arrows step through the same set.
-const SHOTS = [
+// The video closes the sequence, so the card settles on it playing.
+const SHOTS: { src: string; label: string; video?: boolean }[] = [
   { src: "/hero/pic1.jpg", label: "Lobby" },
   { src: "/hero/pic2.jpg", label: "Reception" },
   { src: "/hero/pic3.jpg", label: "Corridors" },
   { src: "/hero/pic4.jpg", label: "Lodging suite" },
   { src: "/hero/final.jpg", label: "Exterior" },
+  { src: "/hero/jaidev.mp4", label: "Walkthrough", video: true },
 ];
 const LAST = SHOTS.length - 1;
 
@@ -39,6 +41,21 @@ export default function Hero() {
 
   const sectionRef = useRef<HTMLElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Play the video once, from the start, each time it comes on screen, and
+  // pause it when the visitor steps away.
+  const onVideo = SHOTS[shot].video === true;
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (onVideo) {
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    } else {
+      v.pause();
+    }
+  }, [onVideo]);
 
   // Start once every shot is decoded (or after a fallback timeout) so the
   // shutter never flashes an empty frame.
@@ -197,22 +214,33 @@ export default function Hero() {
               }}
               aria-hidden={i !== shot}
             >
-              <Image
-                src={item.src}
-                alt={`K-Indrali Business Square, ${item.label.toLowerCase()}`}
-                fill
-                sizes="100vw"
-                loading="eager"
-                fetchPriority={i === 0 || i === LAST ? "high" : "auto"}
-                onLoad={() => setLoaded((n) => n + 1)}
-                // Keep the building in frame however the card is cropped.
-                className={`object-cover ${i === LAST ? "object-[42%_40%]" : ""}`}
-                // A gentle settle as each shot arrives keeps the cut from feeling static.
-                style={{
-                  transform: i <= shot ? "scale(1)" : "scale(1.06)",
-                  transition: `transform ${SHUTTER_MS + FADE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
-                }}
-              />
+              {item.video ? (
+                <video
+                  src={item.src}
+                  poster="/hero/final.jpg"
+                  ref={videoRef}
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-label="K-Indrali Business Square, walkthrough video"
+                  onLoadedData={() => setLoaded((n) => n + 1)}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={settle(i <= shot)}
+                />
+              ) : (
+                <Image
+                  src={item.src}
+                  alt={`K-Indrali Business Square, ${item.label.toLowerCase()}`}
+                  fill
+                  sizes="100vw"
+                  loading="eager"
+                  fetchPriority={i === 0 || i === LAST ? "high" : "auto"}
+                  onLoad={() => setLoaded((n) => n + 1)}
+                  // Keep the building in frame however the card is cropped.
+                  className={`object-cover ${item.src === "/hero/final.jpg" ? "object-[42%_40%]" : ""}`}
+                  style={settle(i <= shot)}
+                />
+              )}
             </div>
           ))}
 
@@ -323,6 +351,14 @@ function InfoCard({
       </div>
     </div>
   );
+}
+
+// A gentle settle as each shot arrives keeps the cut from feeling static.
+function settle(shown: boolean): React.CSSProperties {
+  return {
+    transform: shown ? "scale(1)" : "scale(1.06)",
+    transition: `transform ${SHUTTER_MS + FADE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+  };
 }
 
 // Long ease-out so motion settles gently rather than stopping short.
