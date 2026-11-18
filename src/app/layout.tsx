@@ -16,9 +16,9 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "K-Indrali Business Square",
+  title: "K-Indrali Business Square | Jaidev Infra Project",
   description:
-    "A premium G+4 commercial and lodging complex at the gateway between Udupi and Manipal.",
+    "Retail showrooms, offices and lodging suites in a G+4, Vastu-planned building on the Udupi-Manipal Highway, by Jaidev Infra Project.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

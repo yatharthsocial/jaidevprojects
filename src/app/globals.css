@@ -24,3 +24,12 @@ body {
     transform: translateY(4px);
   }
 }
+
+@keyframes splash-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+}
+

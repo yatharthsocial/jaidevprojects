@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "@/components/Reveal";
-import { SITE } from "@/lib/site";
+import { COMPLETION } from "@/lib/site";
 
 const PAGE = "#ebeae5";
 
@@ -10,31 +10,25 @@ const PAGE = "#ebeae5";
 const FAQS = [
   {
     q: "Where is K-Indrali Business Square?",
-    a: `On the Udupi-Manipal Highway at ${SITE.address.replace("K-Indrali Business Square, ", "")}. Udupi Railway Station is 1.6 km away and Kasturba Hospital, Manipal is 2 km away.`,
+    a: "On the Udupi-Manipal Highway at Indrali, Udupi: 1.6 km from Udupi Railway Station and 2 km from Kasturba Hospital, Manipal.",
   },
   {
     q: "What kind of spaces are available?",
-    a: "Retail showrooms, professional office spaces and lodging suites. The ground and first floors are designed for showrooms, cafes and offices, and the second to fourth floors for boutique hotel rooms and premium lodging suites.",
-  },
-  {
-    q: "What is on each level?",
-    a: "Lower basement: secure parking for owners and visitors. Upper basement: parking with convenience shops. Ground and first floor: retail showrooms, cafes and offices. Second to fourth floor: hotel rooms and lodging suites. Rooftop: a space for a signature lounge or rooftop restaurant with city views.",
+    a: "Retail showrooms, cafes and offices on the ground and first floors, and hotel rooms and lodging suites on the second to fourth floors. See Floor plans for every level.",
   },
   {
     q: "Is the building plan approved?",
-    a: "Yes. K-Indrali Business Square has an approved building plan.",
+    a: "Yes. The building plan is approved, and the development is planned to be Vastu compliant.",
   },
   {
-    q: "Is the project Vastu compliant?",
-    a: "Yes. The development is planned to be Vastu compliant.",
-  },
-  {
-    q: "What amenities are included?",
-    a: "Generator backup for common areas and units, car parking, fire safety provisions, 24/7 water supply (well and municipality), vitrified tile flooring, a passenger lift, rainwater harvesting, a spacious lobby, CCTV surveillance and a sewage treatment plant.",
+    q: "When will the project be completed?",
+    a: COMPLETION.confirmed
+      ? `Completion is expected by ${COMPLETION.date}. Follow the construction progress section for site updates.`
+      : "The completion timeline will be published here once it is confirmed. Our team can give you the latest status.",
   },
   {
     q: "Can I visit the site?",
-    a: "Yes. Send us your details using the form below and our team will get in touch to arrange a visit.",
+    a: "Yes. Call or WhatsApp us, or send the form below, and we will arrange a visit.",
   },
 ];
 

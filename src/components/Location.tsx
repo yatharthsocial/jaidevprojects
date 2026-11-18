@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/Reveal";
+import { PinIcon } from "@/components/icons";
+import { DIRECTIONS_URL, SITE } from "@/lib/site";
 
 const PAGE = "#ebeae5";
 
-const ADDRESS =
-  "K-Indrali Business Square, Udupi-Manipal Hwy, Rudra Priya Nagar, Indrali, Udupi, Karnataka 576102";
-const DIRECTIONS = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`;
+const ADDRESS = SITE.address;
 
 // Distances from the location page of the brochure.
 const PLACES = [
@@ -103,14 +103,15 @@ export default function Location() {
           <Reveal className="md:col-span-4 md:col-start-9 md:pb-3" delay={200}>
             <p className="text-[15px] leading-[1.7] text-neutral-600">{ADDRESS}</p>
             <a
-              href={DIRECTIONS}
+              href={DIRECTIONS_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group mt-4 inline-flex items-center gap-2 border-b border-neutral-900/40 pb-1 text-sm font-medium transition-colors hover:border-neutral-900"
+              className="group mt-5 inline-flex items-center gap-3 rounded-full bg-neutral-900 py-2 pr-2 pl-5 text-[15px] font-medium text-white shadow-[0_10px_30px_rgb(0_0_0/0.15)] transition-colors hover:bg-neutral-700"
             >
+              <PinIcon className="h-5 w-5" />
               Get directions
-              <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-                &rarr;
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-neutral-900 transition-transform duration-500 group-hover:translate-x-0.5">
+                <span aria-hidden>&rarr;</span>
               </span>
             </a>
           </Reveal>

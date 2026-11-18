@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import "./LeadPopup.css";
+import { SITE, whatsappLink } from "@/lib/site";
 
 // ---------------------------------------------------------------------------
 // Settings: change these to suit.
-// Any endpoint that accepts a JSON POST works, e.g. your own API route or
-// Formspree ("https://formspree.io/f/<your-form-id>").
-const ENDPOINT = "https://formspree.io/f/your-form-id";
+// Shared with the contact form; see src/app/api/enquiry/route.ts.
+const ENDPOINT = "/api/enquiry";
 const SHOW_AFTER_MS = 5000;
 const HIDE_FOR_DAYS = 7;
 const CLOSE_AFTER_SUCCESS_MS = 3500;
@@ -152,8 +152,8 @@ export default function LeadPopup() {
           name: values.name.trim(),
           email: values.email.trim(),
           phone: values.phone.trim(),
+          interest: "Consultation",
           source: "Lead popup",
-          page: window.location.href,
         }),
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -207,8 +207,8 @@ export default function LeadPopup() {
               Get a Free Consultation
             </h2>
             <p id={descId} className="lead-popup-subtitle">
-              Share your details and our team will call you back with availability, pricing and a
-              time to visit.
+              Leave your details and our team will call you back with availability, pricing and a
+              time to visit the site.
             </p>
 
             <form className="lead-popup-form" onSubmit={onSubmit} noValidate>
@@ -254,7 +254,11 @@ export default function LeadPopup() {
 
               {status === "error" && (
                 <p className="lead-popup-form-error" role="alert">
-                  Something went wrong. Please try again.
+                  Sorry, that did not go through. Please{" "}
+                  <a href={whatsappLink(`Hello, I'm ${values.name}. Please call me on ${values.phone} about ${SITE.name}.`)} target="_blank" rel="noopener noreferrer">
+                    message us on WhatsApp
+                  </a>{" "}
+                  or call {SITE.phones[0]}.
                 </p>
               )}
 

@@ -23,26 +23,20 @@ const FEATURES = [
   {
     icon: "store",
     title: ["Retail", "showrooms"],
-    body: "Shopfronts facing the main road between Udupi and Manipal, where passing trade sees you first.",
-    href: "#contact",
+    body: "Road-facing shopfronts on the ground and first floors, in full view of highway traffic.",
+    href: "#floor-plans",
   },
   {
     icon: "office",
     title: ["Office", "spaces"],
-    body: "Workable floors for firms, clinics and studios, with two basements of parking below.",
-    href: "#contact",
+    body: "Room for firms, clinics and studios, with two basement levels of parking below.",
+    href: "#floor-plans",
   },
   {
     icon: "bed",
     title: ["Lodging", "suites"],
-    body: "Comfortable rooms for travellers and visitors to Manipal, on the floors above the shops.",
-    href: "#contact",
-  },
-  {
-    icon: "check",
-    title: ["Approved", "building plan"],
-    body: "Planned to Vastu at Indrali, Udupi, with the building plan already approved.",
-    href: "#contact",
+    body: "Hotel rooms and suites on the second to fourth floors, for visitors to Manipal.",
+    href: "#floor-plans",
   },
 ] as const;
 
@@ -102,9 +96,9 @@ export default function About() {
             </Reveal>
             <Reveal delay={200}>
               <p className="mt-6 max-w-[44ch] text-[15px] leading-[1.7] text-neutral-600">
-                We are a young real estate company that cares about quality, honest dealing and
-                good design. Our first address, K-Indrali Business Square, puts shops, offices and
-                lodging under one roof on the road between Udupi and Manipal.
+                Jaidev Infra Project is a young real estate company built on quality, honest
+                dealing and good design. Our first project, K-Indrali Business Square, brings shops,
+                offices and lodging together under one roof.
               </p>
             </Reveal>
           </div>
@@ -226,12 +220,6 @@ function Icon({ name }: { name: string }) {
         <g {...common}>
           <path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5" />
           <circle cx="7" cy="11" r="1.6" />
-        </g>
-      )}
-      {name === "check" && (
-        <g {...common}>
-          <circle cx="12" cy="12" r="8.5" />
-          <path d="M8.5 12.2l2.4 2.3 4.6-4.8" />
         </g>
       )}
     </svg>

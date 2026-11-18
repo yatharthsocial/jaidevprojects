@@ -8,23 +8,31 @@ const PAGE = "#ebeae5";
 // Matches the hero card so the cut-out corners read as one system.
 const RADIUS = 28;
 
-// Exactly as listed on the amenities page of the K-Indrali brochure. Items
-// with a matching render show it; the rest show their icon until real photos
-// are available.
+// Exactly as listed on the amenities page of the K-Indrali brochure. Every
+// amenity shows a project render; where the render does not literally show
+// that amenity it is marked as representative. Swap in real photos as they
+// become available and drop the flag.
 const AMENITIES = [
-  { icon: "power", label: "Generator backup for common areas and units" },
-  { icon: "parking", label: "Car parking", photo: "/hero/final.jpg", focus: "30% 90%" },
-  { icon: "fire", label: "Fire safety provisions" },
-  { icon: "drop", label: "24/7 water supply (well + municipality)" },
-  { icon: "tiles", label: "Vitrified tile flooring", photo: "/hero/pic3.jpg", focus: "50% 90%" },
-  { icon: "lift", label: "Passenger lift (elevator)", photo: "/hero/pic1.jpg", focus: "25% 50%" },
-  { icon: "rain", label: "Rainwater harvesting system" },
-  { icon: "lobby", label: "Spacious lobby", photo: "/hero/pic1.jpg", focus: "50% 50%" },
-  { icon: "cctv", label: "CCTV surveillance" },
-  { icon: "stp", label: "STP (Sewage Treatment Plant)" },
+  { icon: "power", label: "Generator backup", note: "For common areas and every unit.", photo: "/hero/final.jpg", focus: "45% 45%", representative: true },
+  { icon: "parking", label: "Car parking", note: "Two basement levels for owners and visitors.", photo: "/hero/final.jpg", focus: "8% 85%" },
+  { icon: "fire", label: "Fire safety provisions", note: "Fire safety systems throughout the building.", photo: "/hero/pic3.jpg", focus: "50% 40%", representative: true },
+  { icon: "drop", label: "24/7 water supply", note: "From a well and the municipal supply.", photo: "/hero/final.jpg", focus: "40% 20%", representative: true },
+  { icon: "tiles", label: "Vitrified tile flooring", note: "Durable, easy-care floors across the building.", photo: "/hero/pic3.jpg", focus: "50% 90%" },
+  { icon: "lift", label: "Passenger lift", note: "Lift access to every floor.", photo: "/hero/pic1.jpg", focus: "25% 50%" },
+  { icon: "rain", label: "Rainwater harvesting", note: "Rainwater collected and put back to use.", photo: "/hero/final.jpg", focus: "55% 8%", representative: true },
+  { icon: "lobby", label: "Spacious lobby", note: "A generous, welcoming entrance.", photo: "/hero/pic1.jpg", focus: "50% 50%" },
+  { icon: "cctv", label: "CCTV surveillance", note: "Camera coverage of common areas.", photo: "/hero/pic2.jpg", focus: "50% 50%", representative: true },
+  { icon: "stp", label: "Sewage treatment plant", note: "On-site treatment of wastewater.", photo: "/hero/final.jpg", focus: "60% 95%", representative: true },
 ] satisfies Amenity[];
 
-type Amenity = { icon: IconName; label: string; photo?: string; focus?: string };
+type Amenity = {
+  icon: IconName;
+  label: string;
+  note: string;
+  photo: string;
+  focus: string;
+  representative?: boolean;
+};
 type IconName = "power" | "parking" | "fire" | "drop" | "tiles" | "lift" | "rain" | "lobby" | "cctv" | "stp";
 
 const LOBBY = 7;
@@ -71,7 +79,7 @@ export default function Facilities() {
                   </span>
                   <span
                     className={`text-[17px] leading-snug transition-colors duration-500 ${
-                      active === i ? "text-neutral-900" : "text-neutral-500"
+                      active === i ? "text-neutral-900" : "text-neutral-600"
                     }`}
                   >
                     {a.label}
@@ -86,11 +94,12 @@ export default function Facilities() {
   );
 }
 
-// Left-hand panel. Every amenity has its own layer and the active one fades
-// in over the rest, so switching is a smooth cross-fade. The label sits in a
-// tab cut into the bottom-left corner, the same treatment as the hero.
+// Left-hand panel. Every amenity has its own layer (render, icon badge and
+// caption) and the active one cross-fades in over the rest. The caption sits
+// in a tab cut into the bottom-left corner, the same treatment as the hero.
 function Preview({ active }: { active: number }) {
   const curve = `radial-gradient(circle at 100% 0, transparent 19.5px, ${PAGE} 20px)`;
+  const current: Amenity = AMENITIES[active];
   return (
     <div className="relative h-full overflow-hidden bg-[#1c1c1a]" style={{ borderRadius: RADIUS }}>
       {AMENITIES.map((a: Amenity, i) => (
@@ -100,33 +109,35 @@ function Preview({ active }: { active: number }) {
           className="absolute inset-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{ opacity: i === active ? 1 : 0, transform: i === active ? "scale(1)" : "scale(1.04)" }}
         >
-          {a.photo ? (
-            <Image
-              src={a.photo}
-              alt={a.label}
-              fill
-              sizes="(min-width: 768px) 40vw, 100vw"
-              className="object-cover"
-              style={{ objectPosition: a.focus }}
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-white/85">
-              <Icon name={a.icon} className="h-28 w-28 sm:h-36 sm:w-36" strokeWidth={0.6} />
-            </div>
+          <Image
+            src={a.photo}
+            alt=""
+            fill
+            sizes="(min-width: 768px) 40vw, 100vw"
+            className="object-cover"
+            style={{ objectPosition: a.focus }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/5 to-black/10" />
+          <span className="absolute top-5 left-5 flex h-14 w-14 items-center justify-center rounded-full bg-white text-neutral-900 shadow-[0_8px_24px_rgb(0_0_0/0.18)]">
+            <Icon name={a.icon} className="h-6 w-6" />
+          </span>
+          {a.representative && (
+            <span className="absolute top-6 right-5 rounded-full bg-black/45 px-3 py-1 text-[10px] font-medium tracking-[0.14em] text-white uppercase backdrop-blur">
+              Representative image
+            </span>
           )}
         </div>
       ))}
 
       <div
-        className="absolute bottom-0 left-0 max-w-[85%] pt-2.5 pr-2.5"
+        className="absolute bottom-0 left-0 max-w-[88%] pt-2.5 pr-2.5"
         style={{ background: PAGE, borderTopRightRadius: 20 }}
       >
         <span aria-hidden className="absolute bottom-[calc(100%-1px)] left-0" style={{ width: 20, height: 20, background: curve }} />
         <span aria-hidden className="absolute bottom-0 left-[calc(100%-1px)]" style={{ width: 20, height: 20, background: curve }} />
-        <div className="rounded-[14px] bg-white px-5 py-2.5">
-          <p key={active} className="animate-[fade-in_500ms_ease-out] font-serif text-xl leading-tight">
-            {AMENITIES[active].label}
-          </p>
+        <div key={active} className="animate-[fade-in_500ms_ease-out] rounded-[14px] bg-white px-5 py-3">
+          <p className="font-serif text-xl leading-tight">{current.label}</p>
+          <p className="mt-0.5 text-[13px] text-neutral-600">{current.note}</p>
         </div>
       </div>
     </div>
