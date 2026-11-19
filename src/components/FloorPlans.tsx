@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import BrochureDownload from "@/components/BrochureDownload";
 import Reveal from "@/components/Reveal";
 import { DownloadIcon } from "@/components/icons";
-import { APPROVALS, BROCHURE_URL, COMPLETION, LEVELS, enquire } from "@/lib/site";
+import { APPROVALS, COMPLETION, FLOOR_PLANS_FILENAME, FLOOR_PLANS_SIZE, FLOOR_PLANS_URL, LEVELS, enquire } from "@/lib/site";
 
 const PAGE = "#ebeae5";
 const RADIUS = 28;
@@ -42,7 +43,7 @@ export default function FloorPlans() {
           </div>
           <Reveal className="md:col-span-4 md:col-start-9 md:pb-3" delay={200}>
             <p className="text-[15px] leading-[1.7] text-neutral-600">
-              Select a level to see what it is planned for. Detailed drawings are shared with the brochure.
+              Select a level to see what it is planned for, or download the detailed floor plans.
             </p>
           </Reveal>
         </div>
@@ -75,9 +76,7 @@ export default function FloorPlans() {
                       onMouseEnter={() => setActive(i)}
                       onFocus={() => setActive(i)}
                       aria-pressed={on}
-                      className={`flex items-center justify-between gap-4 rounded-[14px] border px-5 text-left transition-colors duration-300 ${
-                        i === 0 ? "mx-auto w-[82%] py-3" : "w-full py-4"
-                      } ${
+                      className={`flex w-full items-center justify-between gap-4 rounded-[14px] border px-5 py-4 text-left transition-colors duration-300 ${
                         on
                           ? "border-neutral-900 bg-neutral-900 text-white"
                           : below
@@ -122,7 +121,7 @@ export default function FloorPlans() {
                   <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-4 p-8 text-center">
                     <PlanIcon />
                     <p className="max-w-[34ch] text-[15px] leading-relaxed text-white/75">
-                      The approved drawing for this level is shared on request.
+                      {FLOOR_PLANS_URL ? "Detailed plans for every level, with room sizes and saleable areas." : "The approved drawing for this level is shared on request."}
                     </p>
                     <PlanButton />
                   </div>
@@ -154,13 +153,17 @@ export default function FloorPlans() {
 function PlanButton() {
   const cls =
     "inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-200";
-  if (BROCHURE_URL) {
+  if (FLOOR_PLANS_URL)
     return (
-      <a href={BROCHURE_URL} download className={cls}>
-        <DownloadIcon /> Download brochure
-      </a>
+      <BrochureDownload
+        className={cls}
+        label="Download floor plans"
+        showSize
+        href={FLOOR_PLANS_URL}
+        filename={FLOOR_PLANS_FILENAME}
+        size={FLOOR_PLANS_SIZE}
+      />
     );
-  }
   return (
     <button type="button" onClick={() => enquire("Floor plans")} className={cls}>
       <DownloadIcon /> Request floor plans

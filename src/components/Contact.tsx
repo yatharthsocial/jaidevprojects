@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import BrochureDownload from "@/components/BrochureDownload";
 import Reveal from "@/components/Reveal";
 import { PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/icons";
 import { DIRECTIONS_URL, ENQUIRE_EVENT, SITE, digits, whatsappLink } from "@/lib/site";
@@ -119,6 +120,10 @@ export default function Contact() {
                   <PinIcon className="h-5 w-5" /> Get directions
                 </a>
               </div>
+              <BrochureDownload
+                showSize
+                className="inline-flex items-center justify-center rounded-full border border-white/25 px-5 py-3.5 text-[15px] font-medium text-white transition-colors hover:border-white/60 hover:bg-white/[0.05]"
+              />
             </div>
 
             <dl className="mt-auto divide-y divide-white/10 border-y border-white/10">

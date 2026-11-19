@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Brand from "@/components/Brand";
-import { DownloadIcon, PinIcon } from "@/components/icons";
-import { BROCHURE_URL, DIRECTIONS_URL, NAV, SITE, enquire } from "@/lib/site";
+import BrochureDownload from "@/components/BrochureDownload";
+import { PinIcon } from "@/components/icons";
+import { DIRECTIONS_URL, NAV, SITE } from "@/lib/site";
 
 // Renders of the project. The exterior opens the site; the card's arrows then
 // step through the rest.
@@ -18,7 +19,7 @@ const SHOTS = [
 
 // The logo holds for at least MIN_SPLASH_MS so it registers, and the intro
 // never waits longer than MAX_WAIT_MS for the opening image.
-const MIN_SPLASH_MS = 1800;
+const MIN_SPLASH_MS = 2500;
 const MAX_WAIT_MS = 3000;
 // One continuous move: the logo fades while the photo, already in its final
 // place, opens out from the centre. Text follows once it has mostly settled.
@@ -114,8 +115,8 @@ export default function Hero() {
             transition: `opacity 900ms ease-in-out, transform 1400ms ${SETTLE}`,
           }}
         >
-          <Brand size="splash" className="animate-[splash-in_900ms_cubic-bezier(0.16,1,0.3,1)_both]" />
-          <span className="relative block h-px w-24 overflow-hidden bg-neutral-900/15">
+          <Brand size="splash" animate />
+          <span className="relative block h-px w-24 animate-[fade-up_800ms_ease-out_both] overflow-hidden bg-neutral-900/15 [animation-delay:1000ms]">
             <span
               className="absolute inset-y-0 left-0 bg-neutral-900"
               style={{
@@ -124,7 +125,7 @@ export default function Hero() {
               }}
             />
           </span>
-          <p className="px-6 text-center text-[11px] font-medium text-neutral-500 uppercase" style={{ letterSpacing: "0.24em", marginRight: "-0.24em" }}>
+          <p className="animate-[fade-up_800ms_ease-out_both] px-6 text-center text-[11px] font-medium text-neutral-500 uppercase [animation-delay:1150ms]" style={{ letterSpacing: "0.24em", marginRight: "-0.24em" }}>
             Presents {SITE.name}
           </p>
         </div>
@@ -273,22 +274,6 @@ function Headline() {
   );
 }
 
-// Download the brochure when the file exists, otherwise request it.
-function BrochureButton({ className }: { className: string }) {
-  if (BROCHURE_URL) {
-    return (
-      <a href={BROCHURE_URL} download className={className}>
-        <DownloadIcon /> Download brochure
-      </a>
-    );
-  }
-  return (
-    <button type="button" onClick={() => enquire("Brochure")} className={className}>
-      <DownloadIcon /> Get the brochure
-    </button>
-  );
-}
-
 function HeroActions({ className = "" }: { className?: string }) {
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
@@ -300,7 +285,7 @@ function HeroActions({ className = "" }: { className?: string }) {
       >
         <PinIcon /> Get directions
       </a>
-      <BrochureButton className="inline-flex items-center gap-2 rounded-full border border-neutral-900/20 px-3.5 py-2 text-[12.5px] font-medium transition-colors hover:border-neutral-900 hover:bg-white" />
+      <BrochureDownload className="inline-flex items-center gap-2 rounded-full border border-neutral-900/20 px-3.5 py-2 text-[12.5px] font-medium transition-colors hover:border-neutral-900 hover:bg-white" />
     </div>
   );
 }

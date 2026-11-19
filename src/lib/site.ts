@@ -18,9 +18,16 @@ export const SITE = {
   shortAddress: "Udupi-Manipal Hwy, Indrali, Udupi 576102",
 };
 
-// Official brochure, placed in /public (e.g. "/docs/k-indrali-brochure.pdf").
-// Empty: brochure buttons ask for it through the enquiry form instead.
-export const BROCHURE_URL = "";
+// Official brochure (a web-optimised copy of indrali-bookligt.pdf). Empty:
+// brochure buttons ask for it through the enquiry form instead.
+export const BROCHURE_URL = "/brochure/K-Indrali-Business-Square-Brochure.pdf";
+export const BROCHURE_FILENAME = "K-Indrali-Business-Square-Brochure.pdf";
+export const BROCHURE_SIZE = "4 MB";
+
+// Floor plans booklet (a web-optimised copy of floorplan.pdf).
+export const FLOOR_PLANS_URL = "/brochure/K-Indrali-Business-Square-Floor-Plans.pdf";
+export const FLOOR_PLANS_FILENAME = "K-Indrali-Business-Square-Floor-Plans.pdf";
+export const FLOOR_PLANS_SIZE = "4 MB";
 
 // Only shown as a date once `confirmed` is true.
 export const COMPLETION = { date: "December 2027", confirmed: false };

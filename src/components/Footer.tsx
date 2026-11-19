@@ -91,7 +91,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-neutral-500">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pb-10 text-xs text-neutral-500">
           <p>&copy; 2026 {SITE.developer}. All rights reserved.</p>
           <a href="#" className="transition-colors hover:text-neutral-900">
             Back to top &uarr;
@@ -99,13 +99,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Oversized wordmark, cropped by the page edge */}
-      <p
-        aria-hidden
-        className="mt-6 text-center font-serif text-[30vw] leading-[0.72] tracking-[-0.04em] whitespace-nowrap text-neutral-900/[0.07] select-none"
-      >
-        Jaidev
-      </p>
     </footer>
   );
 }

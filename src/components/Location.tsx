@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/Reveal";
 import { PinIcon } from "@/components/icons";
@@ -23,12 +24,19 @@ const CYCLE_MS = 3500;
 
 type IconName = (typeof PLACES)[number]["icon"];
 
-// Wide screens pin the section and let scrolling step through the places.
+// Wide screens pin the section and scrolling moves through the places. The
+// pinned stretch is kept short (about 40% of a screen per place) and the
+// marker on the distance line follows the scroll continuously, so the page
+// never feels stuck.
 const PIN_QUERY = "(min-width: 1024px) and (min-height: 640px)";
+
+const smooth = (t: number) => t * t * (3 - 2 * t);
 
 export default function Location() {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+  // Continuous scroll position through the places, 0 to PLACES.length.
+  const [scrollPos, setScrollPos] = useState(0);
   const [pinned, setPinned] = useState(false);
   // Narrow screens cycle on their own until the visitor picks a place.
   const [auto, setAuto] = useState(true);
@@ -51,6 +59,7 @@ export default function Location() {
       const rect = section.getBoundingClientRect();
       const range = rect.height - window.innerHeight;
       const p = range > 0 ? Math.min(Math.max(-rect.top / range, 0), 0.9999) : 0;
+      setScrollPos(p * PLACES.length);
       setActive(Math.floor(p * PLACES.length));
     };
     const onScroll = () => {
@@ -72,16 +81,37 @@ export default function Location() {
     return () => clearTimeout(t);
   }, [active, auto, pinned]);
 
+  // Pinned: picking a place scrolls to it, so scroll and selection agree.
   const pick = (i: number) => {
+    const section = sectionRef.current;
+    if (pinned && section) {
+      const range = section.offsetHeight - window.innerHeight;
+      const top = section.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + ((i + 0.5) / PLACES.length) * range, behavior: "smooth" });
+      return;
+    }
     setAuto(false);
     setActive(i);
   };
+
+  // Where the marker sits on the distance line. It rests on each place for
+  // the middle of its stretch and glides to the next one in between.
+  let markerKm: number = PLACES[active].km;
+  if (pinned) {
+    const t = Math.min(Math.max(scrollPos - 0.5, 0), PLACES.length - 1);
+    const i = Math.min(Math.floor(t), PLACES.length - 2);
+    const f = smooth(Math.min(Math.max((t - i - 0.3) / 0.4, 0), 1));
+    markerKm = PLACES[i].km + (PLACES[i + 1].km - PLACES[i].km) * f;
+  }
+  // How far through the current place's stretch the scroll is, for the
+  // underline on the active row.
+  const rowFill = pinned ? Math.min(Math.max(scrollPos - active, 0), 1) : 1;
 
   return (
     <section
       ref={sectionRef}
       id="location"
-      className="text-neutral-900 lg:[@media(min-height:640px)]:h-[350svh]"
+      className="text-neutral-900 lg:[@media(min-height:640px)]:h-[300svh]"
       style={{ background: PAGE }}
     >
       <div className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8 sm:py-32 lg:[@media(min-height:640px)]:sticky lg:[@media(min-height:640px)]:top-0 lg:[@media(min-height:640px)]:flex lg:[@media(min-height:640px)]:h-svh lg:[@media(min-height:640px)]:flex-col lg:[@media(min-height:640px)]:justify-center lg:[@media(min-height:640px)]:py-[5svh]">
@@ -126,7 +156,7 @@ export default function Location() {
                   <div
                     key={p.name}
                     aria-hidden={i !== active}
-                    className="absolute inset-0 flex flex-col justify-between transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="absolute inset-0 flex flex-col justify-between lg:justify-start lg:gap-[3svh] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{
                       opacity: i === active ? 1 : 0,
                       transform: i === active ? "translateY(0)" : "translateY(12px)",
@@ -193,9 +223,12 @@ export default function Location() {
                         aria-hidden
                         className="absolute bottom-[-1px] left-0 h-px bg-neutral-900"
                         style={{
-                          width: i === active ? "100%" : "0%",
-                          transition:
-                            i === active && auto && !pinned ? `width ${CYCLE_MS}ms linear` : "width 400ms ease-out",
+                          width: i === active ? `${rowFill * 100}%` : "0%",
+                          transition: pinned
+                            ? "width 120ms linear"
+                            : i === active && auto
+                              ? `width ${CYCLE_MS}ms linear`
+                              : "width 400ms ease-out",
                         }}
                       />
                     </button>
@@ -204,7 +237,7 @@ export default function Location() {
               </ul>
             </div>
 
-            <DistanceLine active={active} onPick={pick} />
+            <DistanceLine active={active} markerKm={markerKm} pinned={pinned} onPick={pick} />
           </div>
         </Reveal>
       </div>
@@ -213,68 +246,160 @@ export default function Location() {
 }
 
 // Every place plotted to scale along a line from the building, 0 to 10 km.
-function DistanceLine({ active, onPick }: { active: number; onPick: (i: number) => void }) {
+// Line y-position inside the track; stickers rise from just above it.
+const LINE_Y = 150;
+
+function DistanceLine({
+  active,
+  markerKm,
+  pinned,
+  onPick,
+}: {
+  active: number;
+  markerKm: number;
+  pinned: boolean;
+  onPick: (i: number) => void;
+}) {
   const ticks = [0, 2.5, 5, 7.5, 10];
   const pos = (km: number) => `${(km / SCALE_KM) * 100}%`;
-  const current = PLACES[active];
+  // Scroll drives the motion directly when pinned; otherwise ease between places.
+  const glide = pinned ? "" : "transition-[width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]";
+  // The checkpoint the marker is resting on. While pinned the marker only
+  // rests exactly on a place between glides, so the sticker shows on arrival
+  // and tucks away as soon as the marker moves on.
+  const arrived = pinned ? PLACES.findIndex((p) => Math.abs(p.km - markerKm) < 0.01) : active;
 
   return (
-    <div className="mt-12 sm:mt-16 lg:mt-[4svh]">
-      <div className="relative mx-2 h-24 sm:mx-4">
-        {/* Track and the filled stretch up to the selected place */}
-        <div className="absolute top-12 right-0 left-0 h-px bg-neutral-900/15" />
+    <div className="mt-6 sm:mt-8 lg:mt-0">
+      <div className="relative mx-2 sm:mx-4" style={{ height: LINE_Y + 36 }}>
+        {/* Track and the filled stretch up to the marker */}
+        <div className="absolute right-0 left-0 h-px bg-neutral-900/15" style={{ top: LINE_Y }} />
         <div
-          className="absolute top-12 left-0 h-[2px] -translate-y-[0.5px] bg-neutral-900 transition-[width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-          style={{ width: pos(current.km) }}
+          className={`absolute left-0 h-[2px] -translate-y-[0.5px] bg-neutral-900 ${glide}`}
+          style={{ top: LINE_Y, width: pos(markerKm) }}
         />
 
         {/* Origin */}
-        <div className="absolute top-12 left-0 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute left-0 -translate-x-1/2 -translate-y-1/2" style={{ top: LINE_Y }}>
           <span className="block h-4 w-4 rounded-full border-[3px] border-neutral-900 bg-white" />
         </div>
-        <span className="absolute top-0 left-0 -translate-x-2 text-[11px] font-medium tracking-[0.18em] whitespace-nowrap uppercase">
-          K-Indrali
-        </span>
 
-        {/* Places */}
+        {/* Checkpoints */}
         {PLACES.map((p, i) => (
           <button
             key={p.name}
             type="button"
             onClick={() => onPick(i)}
             aria-label={`${p.name}, ${p.km} km`}
-            className="absolute top-12 -translate-x-1/2 -translate-y-1/2 p-2"
-            style={{ left: pos(p.km) }}
+            className="absolute -translate-x-1/2 -translate-y-1/2 p-2"
+            style={{ top: LINE_Y, left: pos(p.km) }}
           >
+            {/* A soft ring pulses out once when the marker arrives */}
+            {i === arrived && (
+              <span
+                aria-hidden
+                className="absolute inset-0 m-auto h-3.5 w-3.5 animate-[checkpoint-pulse_900ms_ease-out_both] rounded-full bg-neutral-900"
+              />
+            )}
             <span
-              className={`block rounded-full transition-all duration-500 ${
-                i === active ? "h-3.5 w-3.5 bg-neutral-900 ring-4 ring-neutral-900/10" : "h-2 w-2 bg-neutral-400"
+              className={`relative block rounded-full transition-all duration-500 ${
+                i <= Math.max(arrived, 0) && arrived !== -1 ? "h-2.5 w-2.5 bg-neutral-900" : "h-2 w-2 bg-neutral-400"
               }`}
             />
           </button>
         ))}
 
-        {/* Label for the selected place, kept inside the track at the far end */}
+        {/* Marker that travels along the line with the scroll */}
         <span
-          className="absolute top-0 hidden text-[11px] font-medium tracking-[0.18em] whitespace-nowrap text-neutral-500 uppercase transition-[left] sm:block duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-          style={{
-            left: pos(current.km),
-            transform: current.km > 8 ? "translateX(-100%)" : current.km < 2.5 ? "translateX(-20%)" : "translateX(-50%)",
-          }}
-        >
-          {current.km} km
-        </span>
+          aria-hidden
+          className={`absolute z-10 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-neutral-900 shadow-[0_0_0_6px_rgb(23_23_23/0.08)] ${glide.replace("width", "left")}`}
+          style={{ top: LINE_Y, left: pos(markerKm) }}
+        />
 
-        {/* Scale */}
-        {ticks.map((t) => (
+        {/* Stickers: one per checkpoint, popping up when the marker arrives */}
+        {PLACES.map((p, i) => (
+          <Sticker key={p.name} place={p} index={i} shown={i === arrived} left={pos(p.km)} />
+        ))}
+
+        {/* Scale, with the origin named under its dot */}
+        <span
+          className="absolute left-0 -translate-x-2 text-[11px] font-medium tracking-[0.18em] whitespace-nowrap uppercase"
+          style={{ top: LINE_Y + 20 }}
+        >
+          K-Indrali
+        </span>
+        {ticks.slice(1).map((t) => (
           <span
             key={t}
-            className="absolute top-[4.25rem] text-[11px] whitespace-nowrap text-neutral-400 tabular-nums"
-            style={{ left: pos(t), transform: t === SCALE_KM ? "translateX(-100%)" : "translateX(-50%)" }}
+            className="absolute text-[11px] whitespace-nowrap text-neutral-400 tabular-nums"
+            style={{ top: LINE_Y + 20, left: pos(t), transform: t === SCALE_KM ? "translateX(-100%)" : "translateX(-50%)" }}
           >
-            {t === 0 ? "" : `${t} km`}
+            {t} km
           </span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// Real die-cut stickers of each landmark (cut out from src/LEISURE), with
+// their natural sizes for next/image.
+const STICKERS: Record<IconName, { src: string; w: number; h: number }> = {
+  train: { src: "/landmarks/train.webp", w: 520, h: 485 },
+  hospital: { src: "/landmarks/hospital.webp", w: 520, h: 366 },
+  temple: { src: "/landmarks/temple.webp", w: 520, h: 391 },
+  bus: { src: "/landmarks/bus.webp", w: 520, h: 274 },
+  beach: { src: "/landmarks/beach.webp", w: 520, h: 482 },
+};
+
+// The landmark's sticker, stuck above its checkpoint. It eases up out of the
+// dot (rise, grow and a turn settling to a slight tilt) on a long, soft curve
+// with no bounce, and slips away gently when the marker moves on.
+const TILT = [-4, 3, -3, 4, -3];
+
+function Sticker({
+  place,
+  index,
+  shown,
+  left,
+}: {
+  place: (typeof PLACES)[number];
+  index: number;
+  shown: boolean;
+  left: string;
+}) {
+  const art = STICKERS[place.icon];
+  // Keep the sticker inside the track near either end.
+  const anchor = place.km >= 8 ? 85 : place.km <= 1 ? 15 : 50;
+  const tilt = TILT[index % TILT.length];
+  return (
+    <div
+      aria-hidden={!shown}
+      className="pointer-events-none absolute z-20"
+      style={{ left, top: LINE_Y - 16, transform: `translate(-${anchor}%, -100%)` }}
+    >
+      <div
+        style={{
+          transformOrigin: `${anchor}% 100%`,
+          opacity: shown ? 1 : 0,
+          transform: shown
+            ? `translate3d(0, 0, 0) scale(1) rotate(${tilt}deg)`
+            : `translate3d(0, 26px, 0) scale(0.82) rotate(${tilt * 3}deg)`,
+          transition: shown
+            ? "transform 1100ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms cubic-bezier(0.16, 1, 0.3, 1)"
+            : "transform 520ms cubic-bezier(0.65, 0, 0.35, 1), opacity 420ms cubic-bezier(0.65, 0, 0.35, 1)",
+          willChange: "transform, opacity",
+        }}
+      >
+        <Image
+          src={art.src}
+          alt=""
+          width={art.w}
+          height={art.h}
+          sizes="210px"
+          loading="eager"
+          className="h-auto max-h-[150px] w-auto max-w-[210px] drop-shadow-[0_12px_18px_rgb(0_0_0/0.18)]"
+        />
       </div>
     </div>
   );

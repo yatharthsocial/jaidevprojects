@@ -1,37 +1,33 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import AmenityArt, { type ArtName } from "@/components/AmenityArt";
 import Reveal from "@/components/Reveal";
 
 const PAGE = "#ebeae5";
 // Matches the hero card so the cut-out corners read as one system.
 const RADIUS = 28;
 
-// Exactly as listed on the amenities page of the K-Indrali brochure. Every
-// amenity shows a project render; where the render does not literally show
-// that amenity it is marked as representative. Swap in real photos as they
-// become available and drop the flag.
+// Exactly as listed on the amenities page of the K-Indrali brochure, each with
+// its own illustration in one consistent style.
 const AMENITIES = [
-  { icon: "power", label: "Generator backup", note: "For common areas and every unit.", photo: "/hero/final.jpg", focus: "45% 45%", representative: true },
-  { icon: "parking", label: "Car parking", note: "Two basement levels for owners and visitors.", photo: "/hero/final.jpg", focus: "8% 85%" },
-  { icon: "fire", label: "Fire safety provisions", note: "Fire safety systems throughout the building.", photo: "/hero/pic3.jpg", focus: "50% 40%", representative: true },
-  { icon: "drop", label: "24/7 water supply", note: "From a well and the municipal supply.", photo: "/hero/final.jpg", focus: "40% 20%", representative: true },
-  { icon: "tiles", label: "Vitrified tile flooring", note: "Durable, easy-care floors across the building.", photo: "/hero/pic3.jpg", focus: "50% 90%" },
-  { icon: "lift", label: "Passenger lift", note: "Lift access to every floor.", photo: "/hero/pic1.jpg", focus: "25% 50%" },
-  { icon: "rain", label: "Rainwater harvesting", note: "Rainwater collected and put back to use.", photo: "/hero/final.jpg", focus: "55% 8%", representative: true },
-  { icon: "lobby", label: "Spacious lobby", note: "A generous, welcoming entrance.", photo: "/hero/pic1.jpg", focus: "50% 50%" },
-  { icon: "cctv", label: "CCTV surveillance", note: "Camera coverage of common areas.", photo: "/hero/pic2.jpg", focus: "50% 50%", representative: true },
-  { icon: "stp", label: "Sewage treatment plant", note: "On-site treatment of wastewater.", photo: "/hero/final.jpg", focus: "60% 95%", representative: true },
+  { icon: "power", label: "Generator backup", note: "For common areas and every unit.", art: "power" },
+  { icon: "parking", label: "Car parking", note: "Two basement levels for owners and visitors.", art: "parking" },
+  { icon: "fire", label: "Fire safety provisions", note: "Fire safety systems throughout the building.", art: "fire" },
+  { icon: "drop", label: "24/7 water supply", note: "From a well and the municipal supply.", art: "drop" },
+  { icon: "tiles", label: "Vitrified tile flooring", note: "Durable, easy-care floors across the building.", art: "tiles" },
+  { icon: "lift", label: "Passenger lift", note: "Lift access to every floor.", art: "lift" },
+  { icon: "rain", label: "Rainwater harvesting", note: "Rainwater collected and put back to use.", art: "rain" },
+  { icon: "lobby", label: "Spacious lobby", note: "A generous, welcoming entrance.", art: "lobby" },
+  { icon: "cctv", label: "CCTV surveillance", note: "Camera coverage of common areas.", art: "cctv" },
+  { icon: "stp", label: "Sewage treatment plant", note: "On-site treatment of wastewater.", art: "stp" },
 ] satisfies Amenity[];
 
 type Amenity = {
   icon: IconName;
   label: string;
   note: string;
-  photo: string;
-  focus: string;
-  representative?: boolean;
+  art: ArtName;
 };
 type IconName = "power" | "parking" | "fire" | "drop" | "tiles" | "lift" | "rain" | "lobby" | "cctv" | "stp";
 
@@ -109,23 +105,10 @@ function Preview({ active }: { active: number }) {
           className="absolute inset-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{ opacity: i === active ? 1 : 0, transform: i === active ? "scale(1)" : "scale(1.04)" }}
         >
-          <Image
-            src={a.photo}
-            alt=""
-            fill
-            sizes="(min-width: 768px) 40vw, 100vw"
-            className="object-cover"
-            style={{ objectPosition: a.focus }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/5 to-black/10" />
+          <AmenityArt name={a.art} />
           <span className="absolute top-5 left-5 flex h-14 w-14 items-center justify-center rounded-full bg-white text-neutral-900 shadow-[0_8px_24px_rgb(0_0_0/0.18)]">
             <Icon name={a.icon} className="h-6 w-6" />
           </span>
-          {a.representative && (
-            <span className="absolute top-6 right-5 rounded-full bg-black/45 px-3 py-1 text-[10px] font-medium tracking-[0.14em] text-white uppercase backdrop-blur">
-              Representative image
-            </span>
-          )}
         </div>
       ))}
 
