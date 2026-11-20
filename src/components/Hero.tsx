@@ -102,7 +102,7 @@ export default function Hero() {
   return (
     <div className="h-svh min-h-[620px] overflow-hidden">
       <section
-        className="relative flex h-full w-full flex-col overflow-hidden bg-[var(--page)] px-3 pb-3 text-neutral-900 [--page:#ebeae5] sm:px-5 sm:pb-5"
+        className="relative flex h-full w-full flex-col overflow-hidden bg-[var(--page)] px-5 pb-5 text-neutral-900 [--page:#ebeae5] sm:px-5 sm:pb-5"
       >
         {/* Splash: the company lockup with a loading line, shown while the
             opening image loads. */}
@@ -130,7 +130,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <header className="relative z-40 flex items-center justify-between gap-6 px-2 py-4 sm:py-5" style={reveal(ready, 0)}>
+        <header className="relative z-40 flex items-center justify-between gap-6 py-4 sm:py-5 md:px-2" style={reveal(ready, 0)}>
           <a href="#" aria-label={`${SITE.developer}, back to top`}>
             <Brand />
           </a>
@@ -170,7 +170,7 @@ export default function Hero() {
 
         {/* Narrow screens: no room for the corner panel, so the headline sits
             above the card instead. */}
-        <div className="px-2 pt-1 pb-5 md:hidden" style={reveal(ready, 150)}>
+        <div className="pt-1 pb-5 md:hidden" style={reveal(ready, 150)}>
           <h1 className="font-serif text-[clamp(2.25rem,10vw,3rem)] leading-[0.95] tracking-[-0.02em]">
             <Headline />
           </h1>
@@ -276,16 +276,16 @@ function Headline() {
 
 function HeroActions({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+    <div className={`flex flex-wrap items-stretch gap-2 ${className}`}>
       <a
         href={DIRECTIONS_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-3.5 py-2 text-[12.5px] font-medium text-white transition-colors hover:bg-neutral-700"
+        className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-neutral-900 bg-neutral-900 px-3.5 py-2.5 text-[12.5px] font-medium whitespace-nowrap text-white transition-colors hover:bg-neutral-700 md:flex-none md:py-2"
       >
         <PinIcon /> Get directions
       </a>
-      <BrochureDownload className="inline-flex items-center gap-2 rounded-full border border-neutral-900/20 px-3.5 py-2 text-[12.5px] font-medium transition-colors hover:border-neutral-900 hover:bg-white" />
+      <BrochureDownload className="inline-flex flex-1 items-center gap-2 rounded-full border border-neutral-900/20 px-3.5 py-2.5 text-[12.5px] font-medium whitespace-nowrap transition-colors hover:border-neutral-900 hover:bg-white md:flex-none md:py-2" />
     </div>
   );
 }

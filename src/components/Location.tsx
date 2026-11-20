@@ -149,14 +149,14 @@ export default function Location() {
 
         <Reveal delay={150} className="mt-14 sm:mt-20 lg:mt-[5svh]">
           <div className="rounded-[28px] border border-neutral-900/10 bg-white/70 p-6 sm:p-10 lg:px-12 lg:py-[4.5svh]">
-            <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+            <div className="grid gap-6 sm:gap-10 lg:grid-cols-12 lg:gap-12">
               {/* Readout for the selected place */}
-              <div className="relative min-h-[220px] lg:col-span-5 lg:min-h-0" aria-live="polite">
+              <div className="relative min-h-[196px] sm:min-h-[220px] lg:col-span-5 lg:min-h-0" aria-live="polite">
                 {PLACES.map((p, i) => (
                   <div
                     key={p.name}
                     aria-hidden={i !== active}
-                    className="absolute inset-0 flex flex-col justify-between lg:justify-start lg:gap-[3svh] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    className="absolute inset-0 flex flex-col justify-start gap-6 lg:gap-[3svh] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
                     style={{
                       opacity: i === active ? 1 : 0,
                       transform: i === active ? "translateY(0)" : "translateY(12px)",
@@ -331,7 +331,9 @@ function DistanceLine({
         {ticks.slice(1).map((t) => (
           <span
             key={t}
-            className="absolute text-[11px] whitespace-nowrap text-neutral-400 tabular-nums"
+            // The quarter marks crowd the origin label on phones, so only
+            // 5 and 10 km show there.
+            className={`absolute text-[11px] whitespace-nowrap text-neutral-400 tabular-nums ${t === 5 || t === SCALE_KM ? "" : "hidden sm:block"}`}
             style={{ top: LINE_Y + 20, left: pos(t), transform: t === SCALE_KM ? "translateX(-100%)" : "translateX(-50%)" }}
           >
             {t} km
@@ -396,9 +398,9 @@ function Sticker({
           alt=""
           width={art.w}
           height={art.h}
-          sizes="210px"
+          sizes="(min-width: 640px) 210px, 150px"
           loading="eager"
-          className="h-auto max-h-[150px] w-auto max-w-[210px] drop-shadow-[0_12px_18px_rgb(0_0_0/0.18)]"
+          className="h-auto max-h-[112px] w-auto max-w-[150px] drop-shadow-[0_12px_18px_rgb(0_0_0/0.18)] sm:max-h-[150px] sm:max-w-[210px]"
         />
       </div>
     </div>

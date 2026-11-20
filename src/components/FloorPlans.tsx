@@ -162,6 +162,7 @@ function PlanButton() {
         href={FLOOR_PLANS_URL}
         filename={FLOOR_PLANS_FILENAME}
         size={FLOOR_PLANS_SIZE}
+        sizeClassName="hidden sm:inline"
       />
     );
   return (

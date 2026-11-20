@@ -17,6 +17,7 @@ export default function BrochureDownload({
   href = BROCHURE_URL,
   filename = BROCHURE_FILENAME,
   size = BROCHURE_SIZE,
+  sizeClassName = "",
 }: {
   className?: string;
   label?: string;
@@ -25,6 +26,8 @@ export default function BrochureDownload({
   href?: string;
   filename?: string;
   size?: string;
+  // Extra classes for the "PDF, 4 MB" note, e.g. to hide it on narrow screens.
+  sizeClassName?: string;
 }) {
   const [state, setState] = useState<State>("idle");
   const [progress, setProgress] = useState(0);
@@ -104,7 +107,7 @@ export default function BrochureDownload({
         className="absolute inset-y-0 left-0 bg-current opacity-10 transition-[width,opacity] duration-300 ease-out"
         style={{ width: state === "idle" ? "0%" : `${Math.max(progress, 0.08) * 100}%`, opacity: state === "done" ? 0 : undefined }}
       />
-      <span className="relative inline-flex items-center gap-2">
+      <span className="relative inline-flex items-center gap-2 whitespace-nowrap">
         {state === "done" ? <CheckIcon /> : state === "loading" ? <Spinner /> : <DownloadIcon />}
         {state === "loading"
           ? progress > 0
@@ -113,7 +116,7 @@ export default function BrochureDownload({
           : state === "done"
             ? "Downloaded"
             : label}
-        {state === "idle" && showSize && <span className="opacity-60">PDF, {size}</span>}
+        {state === "idle" && showSize && <span className={`opacity-60 ${sizeClassName}`}>PDF, {size}</span>}
       </span>
     </a>
   );
