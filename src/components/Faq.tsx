@@ -2,35 +2,9 @@
 
 import { useState } from "react";
 import Reveal from "@/components/Reveal";
-import { COMPLETION } from "@/lib/site";
+import { FAQS } from "@/lib/faqs";
 
 const PAGE = "#ebeae5";
-
-// Answers drawn from the K-Indrali brochure.
-const FAQS = [
-  {
-    q: "Where is K-Indrali Business Square?",
-    a: "On the Udupi-Manipal Highway at Indrali, Udupi: 1.6 km from Udupi Railway Station and 2 km from Kasturba Hospital, Manipal.",
-  },
-  {
-    q: "What kind of spaces are available?",
-    a: "Retail showrooms, cafes and offices on the ground and first floors, and hotel rooms and lodging suites on the second to fourth floors. See Floor plans for every level.",
-  },
-  {
-    q: "Is the building plan approved?",
-    a: "Yes. The building plan is approved, and the development is planned to be Vastu compliant.",
-  },
-  {
-    q: "When will the project be completed?",
-    a: COMPLETION.confirmed
-      ? `Completion is expected by ${COMPLETION.date}. Follow the construction progress section for site updates.`
-      : "The completion timeline will be published here once it is confirmed. Our team can give you the latest status.",
-  },
-  {
-    q: "Can I visit the site?",
-    a: "Yes. Call or WhatsApp us, or send the form below, and we will arrange a visit.",
-  },
-];
 
 export default function Faq() {
   const [open, setOpen] = useState(0);

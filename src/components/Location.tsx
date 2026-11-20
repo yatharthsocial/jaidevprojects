@@ -4,20 +4,13 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/Reveal";
 import { PinIcon } from "@/components/icons";
-import { DIRECTIONS_URL, SITE } from "@/lib/site";
+import { DIRECTIONS_URL, NEARBY, SITE } from "@/lib/site";
 
 const PAGE = "#ebeae5";
 
 const ADDRESS = SITE.address;
 
-// Distances from the location page of the brochure.
-const PLACES = [
-  { name: "Udupi Railway Station", km: 1.6, kind: "Transit", icon: "train" },
-  { name: "Kasturba Hospital, Manipal", km: 2, kind: "Healthcare", icon: "hospital" },
-  { name: "Sri Krishna Matha Temple", km: 3, kind: "Heritage", icon: "temple" },
-  { name: "Udupi Bus Stand", km: 3.3, kind: "Transit", icon: "bus" },
-  { name: "Malpe Beach", km: 10, kind: "Leisure", icon: "beach" },
-] as const;
+const PLACES = NEARBY;
 
 const SCALE_KM = 10;
 const CYCLE_MS = 3500;

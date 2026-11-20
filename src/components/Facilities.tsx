@@ -3,25 +3,15 @@
 import { useState } from "react";
 import AmenityArt, { type ArtName } from "@/components/AmenityArt";
 import Reveal from "@/components/Reveal";
+import { AMENITIES as AMENITY_LIST } from "@/lib/site";
 
 const PAGE = "#ebeae5";
 // Matches the hero card so the cut-out corners read as one system.
 const RADIUS = 28;
 
-// Exactly as listed on the amenities page of the K-Indrali brochure, each with
-// its own illustration in one consistent style.
-const AMENITIES = [
-  { icon: "power", label: "Generator backup", note: "For common areas and every unit.", art: "power" },
-  { icon: "parking", label: "Car parking", note: "Two basement levels for owners and visitors.", art: "parking" },
-  { icon: "fire", label: "Fire safety provisions", note: "Fire safety systems throughout the building.", art: "fire" },
-  { icon: "drop", label: "24/7 water supply", note: "From a well and the municipal supply.", art: "drop" },
-  { icon: "tiles", label: "Vitrified tile flooring", note: "Durable, easy-care floors across the building.", art: "tiles" },
-  { icon: "lift", label: "Passenger lift", note: "Lift access to every floor.", art: "lift" },
-  { icon: "rain", label: "Rainwater harvesting", note: "Rainwater collected and put back to use.", art: "rain" },
-  { icon: "lobby", label: "Spacious lobby", note: "A generous, welcoming entrance.", art: "lobby" },
-  { icon: "cctv", label: "CCTV surveillance", note: "Camera coverage of common areas.", art: "cctv" },
-  { icon: "stp", label: "Sewage treatment plant", note: "On-site treatment of wastewater.", art: "stp" },
-] satisfies Amenity[];
+// The brochure's amenities (src/lib/site.ts), each with its own illustration
+// in one consistent style.
+const AMENITIES: readonly Amenity[] = AMENITY_LIST;
 
 type Amenity = {
   icon: IconName;

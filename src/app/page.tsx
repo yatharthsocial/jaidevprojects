@@ -10,10 +10,12 @@ import LeadPopup from "@/components/LeadPopup";
 import Location from "@/components/Location";
 import Progress from "@/components/Progress";
 import WhyInvest from "@/components/WhyInvest";
+import { jsonLd, structuredData } from "@/lib/structured-data";
 
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredData()) }} />
       <main>
         <Hero />
         <About />

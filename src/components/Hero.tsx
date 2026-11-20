@@ -170,10 +170,13 @@ export default function Hero() {
 
         {/* Narrow screens: no room for the corner panel, so the headline sits
             above the card instead. */}
+        <h1 className="sr-only">
+          {SITE.name}: retail showrooms, offices and lodging suites on the Udupi-Manipal Highway, Udupi
+        </h1>
         <div className="pt-1 pb-5 md:hidden" style={reveal(ready, 150)}>
-          <h1 className="font-serif text-[clamp(2.25rem,10vw,3rem)] leading-[0.95] tracking-[-0.02em]">
+          <p className="font-serif text-[clamp(2.25rem,10vw,3rem)] leading-[0.95] tracking-[-0.02em]">
             <Headline />
-          </h1>
+          </p>
           <HeroActions className="mt-4" />
         </div>
 
@@ -301,12 +304,12 @@ function TitleCard({ ready }: { ready: boolean }) {
     >
       <span aria-hidden className="absolute top-0 left-[calc(100%-1px)]" style={{ width: RADIUS, height: RADIUS, background: curve }} />
       <span aria-hidden className="absolute top-[calc(100%-1px)] left-0" style={{ width: RADIUS, height: RADIUS, background: curve }} />
-      <h1
+      <p
         className="font-serif text-[clamp(2rem,3.2vw,3.25rem)] leading-[0.95] tracking-[-0.02em]"
         style={reveal(ready, 350)}
       >
         <Headline />
-      </h1>
+      </p>
       <div style={reveal(ready, 500)}>
         <HeroActions className="mt-4" />
       </div>
